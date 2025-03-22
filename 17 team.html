@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KONO BEPPARI NA 17</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .dark-background {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://img.freepik.com/free-photo/view-soccer-ball_23-2150887428.jpg');
+  background-size: cover;
+  background-position: center;
+}
+        /* Football Field Background */
+        .football-field-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('""https://img.freepik.com/free-photo/view-soccer-ball_23-2150887428.jpg"" stroke-width="1"/></svg>');
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        /* Player Silhouettes */
+        .player-silhouette {
+            position: absolute;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .player-silhouette:nth-child(1) {
+            top: 10%;
+            left: 15%;
+            width: 80px;
+            height: 80px;
+            background-image: url('https://img.freepik.com/free-photo/view-soccer-ball_23-2150887428.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: playerRun 20s linear infinite;
+        }
+
+        .player-silhouette:nth-child(2) {
+            bottom: 15%;
+            right: 20%;
+            width: 60px;
+            height: 60px;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/2719/2719951.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: playerRun 15s linear infinite reverse;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: #000000;
+            color: white;
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #ff0000;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ff0000;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://images.unsplash.com/photo-1515719576584-ef798020373f');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('data:image/jpeg;base64,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');
+  background-size: cover;
+  background-position: center;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            padding: 0 1rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 #000;
+            animation: slideIn 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease 0.3s forwards;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #ff0000;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        .cta-button:hover {
+            background-color: #cc0000;
+            transform: translateY(-3px);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #023f02;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: #ff0000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        .player-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .player-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .player-image {
+            height: 325px;
+            overflow: hidden;
+        }
+
+        .player-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .player-card:hover .player-image img {
+            transform: scale(1.1);
+        }
+
+        .player-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .player-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0a3d0a;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-position {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        /* Schedule Section */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .schedule-table th {
+            background-color: #0a3d0a;
+            color: white;
+        }
+
+        .match-row:hover {
+            background-color: #f9f9f9;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .countdown-item {
+            background-color: #030303;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 5px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .countdown-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+        }
+
+        /* News Section */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        .news-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .news-image {
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .news-card:hover .news-image img {
+            transform: scale(1.1);
+        }
+
+        .news-content {
+            padding: 1.5rem;
+        }
+
+        .news-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #0a3d0a;
+        }
+
+        .news-excerpt {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            color: #ff0000;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+
+        /* Contact Section */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ff0000;
+        }
+
+        .submit-btn {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #000000;
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background-color: #ff0000;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column ul li a:hover {
+            color: #ff0000;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #1a5a1a;
+            color: white;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: #ff0000;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #1a5a1a;
+            color: #ddd;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes playerRun {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(100vw - 80px)); }
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                right: 0;
+                height: 92vh;
+                top: 8vh;
+                background-color: #0a3d0a;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 50%;
+                transform: translateX(100%);
+                transition: transform 0.5s ease-in;
+                box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+                z-index: 999;
+                display: none;
+            }
+
+            .nav-links.active {
+                transform: translateX(0);
+            }
+
+            .nav-links li {
+                opacity: 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .nav-links {
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+
+
+        /* after  */
+
+        .menu-icon {
+  display: none;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.menu-icon .bar {
+  width: 30px;
+  height: 4px;
+  margin: 6px 0;
+  background-color: #333;
+  transition: 0.4s;
+}
+
+/* Fullscreen Menu */
+.fullscreen-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0);
+  color: white;
+  text-align: center;
+  z-index: 999;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s ease;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+}
+
+.menu-list li {
+  margin: 20px 0;
+}
+
+.menu-list li a {
+  color: white;
+  text-decoration: none;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: 0.3s;
+}
+
+.menu-list li a:hover {
+  color: #f39c12;
+}
+
+/* Close Button */
+.menu-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+}
+
+.menu-icon .bar-1 {
+  transform: rotate(45deg);
+  position: relative;
+  top: 8px;
+}
+
+.menu-icon .bar-2 {
+  opacity: 0;
+}
+
+.menu-icon .bar-3 {
+  transform: rotate(-45deg);
+  position: relative;
+  top: -8px;
+}
+.fot-img{
+    height: 40px;
+    margin-top: 5px;
+}
+.fot{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+    </style>
+</head>
+<body>
+    <!-- Football Field Background -->
+    <div class="football-field-bg"></div>
+    <div class="player-silhouette"></div>
+    <div class="player-silhouette"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="fot">
+                <a href="#home" class="logo">KONO BEPPARI NA 17</a>
+                <img class="fot-img" src="https://pngimg.com/d/football_PNG52758.png" alt="">
+
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#schedule">Schedule</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#con">Contact</a></li>
+            </ul>
+            <!-- <div class="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div> -->
+            <!-- Menu Icon -->
+  <div class="menu-icon" onclick="toggleMenu()">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+
+  <!-- Fullscreen Menu -->
+  <div class="fullscreen-menu" id="menu">
+    <div class="menu-close" onclick="toggleMenu()"></div>
+    <ul  class="menu-list">
+      <li><a  href="#home">Home</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#news">News</a></li>
+      <li><a href="#con">Contact</a></li>
+    </ul>
+  </div>
+
+
+        </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Welcome to KONO BEPPARI NA 17</h1>
+            <p>Representing Thakurgaon Govt Boys High School 17 batch in the upcoming football tournament</p>
+            <a href="#team" class="cta-button">Meet Our Team</a>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team">
+        <div class="container">
+            <h2 class="section-title">Our Squad</h2>
+            <div class="team-grid">
+                <!-- Player 1 -->
+                <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Shovon.jpeg" alt="Player 1">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Sadman Sadik</h3>
+                        <p class="player-position">Team Owner</p>
+                       
+                    </div>
+                </div>
+                
+                <!-- Player 2 -->
+                <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Riad.jpeg" alt="Player 2">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Riad</h3>
+                        <p class="player-position">Team Manager</p>
+                        
+                    </div>
+                </div>
+                
+                <!-- Player 3 -->
+                <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Anamul.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Enamul</h3>
+                        <p class="player-position">Head Coach</p>
+                       
+                    </div>
+                </div>
+
+                   <!-- Player 4 -->
+                   <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Tapon.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Dr. Tapon C Roy</h3>
+                        <p class="player-position">Team Physiologist</p>
+                        
+                    </div>
+                </div>
+
+                   <!-- Player 5 -->
+                   <div class="player-card">
+                    <div class="player-image">
+                        <img src="c:\Users\acer\OneDrive\Desktop\Image team 17\Anol.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Adib Hossain Anol</h3>
+                        <p class="player-position">Team Psychologist</p>
+                       
+                    </div>
+                </div>
+                
+                  <!-- Player 6 -->
+                  <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Adib.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Adib</h3>
+                        <p class="player-position">Nutritionist</p>
+                      
+                    </div>
+                </div>
+
+                  <!-- Player 7 -->
+                  <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Benjir.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Benjir Ahmed</h3>
+                        <p class="player-position">Fitness Trainer</p>
+                       
+                    </div>
+                </div>
+
+                  <!-- Player 8 -->
+                  <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Lugdhok.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Rafshan Ekhowan</h3>
+                        <p class="player-position">Official Photographer</p>
+                        
+                    </div>
+                </div>
+
+                  <!-- Player 9 -->
+                  <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Sheen.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">NH Sheen</h3>
+                        <p class="player-position">Motivation Speaker & Cinematographer</p>
+                        
+                    </div>
+                </div>
+                 <!-- Player 10 -->
+                 <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Shams.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Shams Noor</h3>
+                        <p class="player-position">Position: CF</p>
+                       
+                    </div>
+                </div>
+                 <!-- Player 11 -->
+                 <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Rudro.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Rudro</h3>
+                        <p class="player-position">Position: CB</p>
+                        
+                    </div>
+                </div>
+                 <!-- Player 12 -->
+                 <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Hasan.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Hasan</h3>
+                        <p class="player-position">Position: CMF</p>
+                        
+                    </div>
+                </div>
+                 <!-- Player 13 -->
+                 <div class="player-card">
+                    <div class="player-image">
+                        <img src="c:\Users\acer\OneDrive\Desktop\Image team 17\Mugdho.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Mugdho</h3>
+                        <p class="player-position">Position: RB</p>
+                        
+                    </div>
+                </div>
+                 <!-- Player 14 -->
+                 <div class="player-card">
+                    <div class="player-image">
+                        <img src="c:\Users\acer\OneDrive\Desktop\Image team 17\Shanu.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Shanu</h3>
+                        <p class="player-position">position: LB</p>
+                        
+                    </div>
+                </div>
+                 <!-- Player 15 -->
+                 <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Labonno.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">LK Roy</h3>
+                        <p class="player-position">Position: AMF</p>
+                        
+                    </div>
+                </div>
+                 <!-- Player 16 -->
+                 <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Abir.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Abir</h3>
+                        <p class="player-position">Position: LWF</p>
+                        <p class="player-number">4</p>
+                    </div>
+                </div>
+                 <!-- Player 17 -->
+                 <div class="player-card">
+                    <div class="player-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\saimon.jpeg">
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Saimon</h3>
+                        <p class="player-position">Position: GK</p>
+                       
+                    </div>
+                </div>
+  <!-- Player 18 -->
+  <div class="player-card">
+    <div class="player-image">
+        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\Rakin.jpeg">
+    </div>
+    <div class="player-info">
+        <h3 class="player-name">Rakin</h3>
+        <p class="player-position">Position: RWF</p>
+       
+    </div>
+</div>
+
+ <!-- Player 19 -->
+ <div class="player-card">
+    <div class="player-image">
+        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\pranto.jpeg">
+    </div>
+    <div class="player-info">
+        <h3 class="player-name">Pranto</h3>
+        <p class="player-position">Position: CMF</p>
+       
+    </div>
+</div>
+                <!-- Add more player cards as needed -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section id="schedule" style="background-color: #f9f9f9;">
+        <div class="container">
+            <h2 class="section-title">Tournament Schedule</h2>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>Opponent</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Venue</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="match-row">
+                        <td>1</td>
+                        <td>AMRA 28</td>
+                        <td>Comming Soon</td>
+                        <td>0:00 PM</td>
+                        <td>School Ground</td>
+                        <td>-</td>
+                    </tr>
+                    <tr class="match-row">
+                        <td>2</td>
+                        <td>UNDERRATED 26</td>
+                        <td>Comming Soon</td>
+                        <td>0:00 PM</td>
+                        <td>School Ground</td>
+                        <td>-</td>
+                    </tr>
+                    <tr class="match-row">
+                        <td>3</td>
+                        <td>REAL 27</td>
+                        <td>Comming Soon</td>
+                        <td>0:00 PM</td>
+                        <td>School Ground</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="countdown">
+                <div class="countdown-item">
+                    <div class="countdown-value" id="days">0</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-value" id="hours">0</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-value" id="minutes">0</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-value" id="seconds">0</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section id="news">
+        <div class="container">
+            <h2 class="section-title">Latest News</h2>
+            <div class="news-grid">
+                <!-- News Item 1 -->
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://media.istockphoto.com/id/1502846052/photo/textured-soccer-game-field-with-neon-fog-center-midfield.jpg?s=612x612&w=0&k=20&c=LPSo6ps1NfZ_xviL0tmhnnrcLjjFXAQhsYr3qAOfviY=" alt="News 1">
+                    </div>
+                    <div class="news-content">
+                        <h3 class="news-title">Team Training Intensifies for Upcoming Tournament</h3>
+                        <p class="news-excerpt">Our dedicated players have been putting in extra hours on the field to prepare for the challenging matches ahead.</p>
+                        <a href="https://www.facebook.com/share/p/1Ka4bkAwRP/" class="https://www.facebook.com/share/p/1Ka4bkAwRP/">Read More</a>
+                    </div>
+                </div>
+                
+                <!-- News Item 2 -->
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="c:\Users\acer\OneDrive\Desktop\Image team 17\news 2.jpeg" alt="News 2">
+                    </div>
+                    <div class="news-content">
+                        <h3 class="news-title">Team Group List is published</h3>
+                        <p class="news-excerpt">Check out the fixtures and our schedule will be announced soon.</p>
+                        <a href="https://www.facebook.com/share/p/1BN8Q9G1rp/" class="https://www.facebook.com/share/p/1BN8Q9G1rp/">Read More</a>
+                    </div>
+                </div>
+
+                 <!-- News Item 3 -->
+                 <div class="news-card">
+                    <div class="news-image">
+                        <img src="C:\Users\acer\OneDrive\Desktop\Image team 17\news 3.jpeg" alt="News 1">
+                    </div>
+                    <div class="news-content">
+                        <h3 class="news-title">Start with a great team spirits.</h3>
+                        <p class="news-excerpt">Start of a new era. Our team vision and mission own by every players. Stay with us for the upcomming journey.</p>
+                        <a href="https://www.facebook.com/share/p/19YUcAe2Cy/" class="https://www.facebook.com/share/p/19YUcAe2Cy/">Read More</a>
+                    </div>
+                </div>
+            </section> 
+    <!-- Contact Section -->
+    <section id="con">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <form  novalidate id="conta" class="contact-form">
+                <div class="form-group">
+                    <input type="text" name="name"  class="form-control" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email"  class="form-control" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="subject"  class="form-control" placeholder="Subject">
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" name="message"  rows="5" placeholder="Your Message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </section>
+    
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-column">
+            <h3>About Us</h3>
+            <p>KONO BEPPARI NA 17 is the proud football team representing batch 17 of Thakurgaon Govt Boys High School. We're committed to excellence in football and academics.</p>
+         
+        </div>
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#schedule">Schedule</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Contact</h3>
+            <ul>
+                <li>Thakurgaon Govt Boys High School Playing Ground</li>
+                <li>Thakurgaon, Bangladesh</li>
+                <li>Team Manager: 01780975649</li>
+                
+            </ul>
+            <div class="social-links">
+                <a href="https://www.facebook.com/share/1EH58wifZS/"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 KONO BEPPARI NA 17. All Rights Reserved.</p>
+    </div>
+</footer>
+     
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>>
+    
+    <script>
+// Initialize EmailJS
+(function () {
+  emailjs.init("KB4Ph3R669P_Ara6P"); // Replace with your user ID from EmailJS
+})();
+
+// Handle form submission
+document.getElementById("conta").addEventListener("submit", function (event) {
+  event.preventDefault(); // Prevent default form submission
+
+  const formData = new FormData(event.target);
+  const name = formData.get('name');
+  const email = formData.get('email');
+  const subject = formData.get('subject');
+  const message = formData.get('message');
+
+  // Create the email parameters
+  const templateParams = {
+    name: name,
+    from_email: email,
+    subject:subject,
+    message: message
+  };
+
+  // Send the email using EmailJS
+  emailjs.send("service_f59251o", "template_4rnr415", templateParams)
+    .then(function(response) {
+      console.log("Success", response);
+    //   document.getElementById('status').innerHTML = "Message sent successfully!";
+    }, function(error) {
+      console.log("Failed", error);
+    //   document.getElementById('status').innerHTML = "Error sending message.";
+    });
+
+  // Optionally clear the form after submission
+  event.target.reset();
+});
+
+        // form 
+
+        function toggleMenu() {
+  const menu = document.getElementById('menu');
+  const bars = document.querySelectorAll('.menu-icon .bar');
+  menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+  
+  // Toggle menu icon animation
+  bars[0].classList.toggle('bar-1');
+  bars[1].classList.toggle('bar-2');
+  bars[2].classList.toggle('bar-3');
+}
+
+// Close the menu when a link is clicked
+const menuLinks = document.querySelectorAll('.menu-list li a');
+menuLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('menu').style.display = 'none';
+    const bars = document.querySelectorAll('.menu-icon .bar');
+    bars[0].classList.remove('bar-1');
+    bars[1].classList.remove('bar-2');
+    bars[2].classList.remove('bar-3');
+  });
+});
+        // after 
+        // Mobile Navigation Toggle
+        // const hamburger = document.querySelector('.hamburger');
+        // const navLinks = document.querySelector('.nav-links');
+        // const links = document.querySelectorAll('.nav-links li');
+
+        // hamburger.addEventListener('click', () => {
+        //     navLinks.classList.toggle('active');
+            
+        //     links.forEach((link, index) => {
+        //         if (link.style.animation) {
+        //             link.style.animation = '';
+        //         } else {
+        //             link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
+        //         }
+        //     });
+            
+        //     hamburger.classList.toggle('toggle');
+        // });
+
+        // Smooth Scrolling
+       
+
+        // Form submission handling
+        
+
+        // Countdown Timer
+        const countdownDate = new Date();
+        countdownDate.setDate(countdownDate.getDate() + 5); // Set to 7 days from now
+        
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById("days").innerHTML = days;
+            document.getElementById("hours").innerHTML = hours;
+            document.getElementById("minutes").innerHTML = minutes;
+            document.getElementById("seconds").innerHTML = seconds;
+            
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("days").innerHTML = "0";
+                document.getElementById("hours").innerHTML = "0";
+                document.getElementById("minutes").innerHTML = "0";
+                document.getElementById("seconds").innerHTML = "0";
+            }
+        };
+        
+        updateCountdown(); // Initial call
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
